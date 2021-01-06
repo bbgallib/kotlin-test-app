@@ -3,39 +3,47 @@ package com.example.kotlintestapp.model
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class ProducersRepository {
     private val db: FirebaseFirestore get() = FirebaseFirestore.getInstance()
 
-    fun add(producer: Producer) {
-        val data = producer.toMap()
-        db.collection(COLLECTION_PATH)
-            .document(producer.id)
-            .set(data)
-            .addOnSuccessListener {
-                Log.i(TAG, "Success adding producer.")
-            }
-            .addOnFailureListener { ex ->
-                Log.w(TAG, "Failure adding producer.", ex)
-            }
+    suspend fun add(producer: Producer): Boolean {
+        return try {
+            val data = producer.toMap()
+            db.collection(COLLECTION_PATH)
+                .document(producer.id)
+                .set(data).await()
+            true
+        } catch (ex: Exception) {
+            Log.w(TAG, "Failed to add producer.")
+            false
+        }
     }
 
-    fun delete(producer: Producer) {
-        db.collection(COLLECTION_PATH)
-            .document(producer.id)
-            .delete()
-            .addOnSuccessListener {
-                Log.i(TAG, "Success deleting producer.")
-            }
-            .addOnFailureListener { ex ->
-                Log.w(TAG, "Failure deleting producer.", ex)
-            }
+    suspend fun delete(producer: Producer): Boolean {
+        return try {
+            db.collection(COLLECTION_PATH)
+                .document(producer.id)
+                .delete().await()
+            true
+        } catch (ex: Exception) {
+            Log.w(TAG, "Failed to delete producer.")
+            false
+        }
     }
 
-    fun getProducers(limit: Long): List<Producer>? {
-        return db.collection(COLLECTION_PATH)
-            .limit(limit)
-            .get().result?.toObjects(Producer::class.java)
+    suspend fun getProducers(limit: Long): List<Producer> {
+        return try {
+            val dataList = db.collection(COLLECTION_PATH)
+                .limit(limit)
+                .get().await()
+                .documents.map { it.data }
+            dataList.mapNotNull { it?.toProducer() }
+        } catch (ex: Exception) {
+            Log.w(TAG, "Failed to get producers.")
+            listOf()
+        }
     }
 
     companion object {

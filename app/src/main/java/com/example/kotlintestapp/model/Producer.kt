@@ -24,3 +24,11 @@ fun Producer.toMap(): Map<String, *> {
         "createdAt" to this.createdAt
     )
 }
+
+fun Map<String, Any>.toProducer(): Producer {
+    val id = this["id"] as String
+    val name = this["name"] as String
+    val iconURL = this["iconURL"] as String?
+    val createdAt = this["createdAt"] as String
+    return Producer(id, name, iconURL, createdAt)
+}
