@@ -1,14 +1,16 @@
-package com.example.kotlintestapp
+package com.example.kotlintestapp.view.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.kotlintestapp.R
 import com.example.kotlintestapp.model.Producer
 import com.example.kotlintestapp.model.ProducersRepository
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
-    private val repository: ProducersRepository = ProducersRepository()
+    private val repository: ProducersRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

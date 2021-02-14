@@ -5,9 +5,9 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class ProducersRepository {
-    private val db: FirebaseFirestore get() = FirebaseFirestore.getInstance()
-
+class ProducersRepository(
+    private val db: FirebaseFirestore
+) {
     suspend fun add(producer: Producer): Boolean {
         return try {
             val data = producer.toMap()
