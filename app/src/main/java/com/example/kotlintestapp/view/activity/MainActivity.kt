@@ -1,6 +1,10 @@
 package com.example.kotlintestapp.view.activity
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.kotlintestapp.R
@@ -30,5 +34,14 @@ class MainActivity : AppCompatActivity() {
             repository.delete(newProducer)
             println("③新しく追加したプロデューサーを削除する ▶ " + repository.getProducers(100))
         }
+    }
+
+    fun sendMessage(view: View) {
+        val editText = findViewById<EditText>(R.id.editText)
+        val message = editText.text.toString()
+        val intent = Intent(this, DisplayMessageActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE, message)
+        }
+        startActivity(intent)
     }
 }
